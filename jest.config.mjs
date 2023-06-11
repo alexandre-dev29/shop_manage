@@ -16,7 +16,7 @@ const config = {
     '!**/node_modules/**',
   ],
   testEnvironment: "jest-environment-jsdom",
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js", "<rootDir>/testConfig/config/singleton.ts"],
   moduleNameMapper: {
     "^@/components/(.*)$": "<rootDir>/components/$1",
     "^@/config/(.*)$": "<rootDir>/config/$1",
