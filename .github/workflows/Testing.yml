@@ -1,18 +1,24 @@
 name: Run All Tests
 on:
   push:
-    branches: [main, master]
+    branches: [ master, dev]
   pull_request:
-    branches: [main, master]
+    branches: [ master, dev]
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: "8.x"
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8.5.1
+          run_install: false
       - name: Install dependencies
         run: pnpm install
       - name: Run Jest
