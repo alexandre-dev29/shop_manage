@@ -13,8 +13,14 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/client": "4.15.0",
     "@radix-ui/react-slot": "^1.0.2",
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.1.0",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "lucide-react": "0.105.0-alpha.4",
@@ -40,6 +46,7 @@
     "eslint-plugin-tailwindcss": "^3.12.0",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
+    "prisma": "^4.15.0",
     "tailwindcss": "^3.3.2",
     "typescript": "^4.9.5"
   }

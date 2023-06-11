@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id              String   @id @default(cuid())
+  shopName        String   @unique
+  shopInformation String   @db.Text
+  createAt        DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  Users           Users[]
+}
+
+model Account {
+  phoneNumber String       @id @default(cuid())
+  agentCode   String       @unique
+  agentName   String
+  Users       Users[]
+  SubAccount  SubAccount[]
+}
+
+model SubAccount {
+  id            String        @id @default(cuid())
+  type          String
+  devise        Devise
+  amount        Float
+  Account       Account       @relation(fields: [accountNumber], references: [phoneNumber])
+  Transations   Transations[]
+  accountNumber String
+}
+
+model Users {
+  id          String        @id @default(cuid())
+  fullName    String
+  phoneNumber String        @unique
+  password    String
+  role        Role          @default(User)
+  Shop        Shop          @relation(fields: [shopId], references: [id])
+  Transations Transations[]
+  Accounts    Account[]
+  createAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  shopId      String
+}
+
+model Transations {
+  id              String          @id @default(cuid())
+  transationGenre GenreTransation
+  transationType  TypeTransaction
+  amount          Float
+  numeroReference String
+  identityPiece   String
+  phoneNumber     String
+  clientName      String
+  SubAccount      SubAccount      @relation(fields: [subAccountId], references: [id])
+  User            Users           @relation(fields: [usersId], references: [id])
+  usersId         String
+  createAt        DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  subAccountId    String
+}
+
+enum Role {
+  Admin
+  Manager
+  User
+}
+
+enum GenreTransation {
+  Equity
+  Airtel
+  Vodacom
+  Africell
+  Orange
+}
+
+enum TypeTransaction {
+  Depot
+  Retrait
+}
+
+enum Devise {
+  CDF
+  USD
+}
