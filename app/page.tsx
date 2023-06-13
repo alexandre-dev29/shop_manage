@@ -1,15 +1,6 @@
-import { cookies } from "next/headers"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-
-import { Database } from "@/types/supabase"
-import supabase_client from "@/lib/supabase_client"
-import { Button } from "@/components/ui/button"
+import Content from "@/app/content"
 
 export default async function IndexPage() {
-  const supabaseClient = await createServerComponentClient<Database>({
-    cookies,
-  })
-  console.log(await supabaseClient.from("profiles").select())
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
@@ -27,7 +18,7 @@ export default async function IndexPage() {
           into your apps. Free. Open Source. And Next.js 13 Ready.
         </p>
       </div>
-      <Button>SignUp</Button>
+      <Content />
     </section>
   )
 }

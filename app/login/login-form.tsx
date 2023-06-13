@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Loader2, LogIn } from "lucide-react"
+import nookies from "nookies"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { Database } from "@/types/supabase"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -38,7 +40,7 @@ const formSchema = z.object({
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient<Database>()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,8 +59,20 @@ const LoginForm = () => {
     })
     if (result.error) {
       toast({ title: "Login Error", description: result.error.message })
+    } else {
+      const profile = await supabase
+        .from("profiles")
+        .select("fullName, role, Shop(shopName)")
+        .eq("id", result.data.user.id)
+      if (profile.data) {
+        nookies.set(null, "profile", JSON.stringify(profile.data[0]), {
+          maxAge: 34 * 24 * 60 * 60,
+          path: "/",
+          domain: "localhost",
+        })
+      }
     }
-    await router.push("/")
+    window.location.replace("/")
     setIsLoading(false)
   }
   return (
