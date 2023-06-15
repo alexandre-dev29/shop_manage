@@ -3,9 +3,9 @@
 import React, { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { Row } from "@tanstack/react-table"
-import { Edit, Loader2 } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { uuid } from "uuidv4"
 import { z } from "zod"
 
 import { Database } from "@/types/supabase"
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -29,29 +30,25 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
-export function EditShop({
-  row,
+export function CreateShop({
   toast,
   currentData,
   setData,
+  triggerElement,
 }: {
-  row: Row<{
-    id: string
-    shopInformation: string
-    shopName: string
-    usersNumber: number
-  }>
   setData: any
   currentData: Shop[]
   toast: any
+  triggerElement: any
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof shopSchemaEditOrCreate>>({
     resolver: zodResolver(shopSchemaEditOrCreate),
     defaultValues: {
-      shopName: row.original.shopName,
-      shopInformation: row.original.shopInformation,
+      shopName: "",
+      shopInformation: "",
     },
   })
 
@@ -60,46 +57,54 @@ export function EditShop({
     shopInformation,
   }: z.infer<typeof shopSchemaEditOrCreate>) {
     setIsLoading(true)
+    const valueToInsert = {
+      shopName,
+      shopInformation,
+      id: uuid(),
+      createAt: new Date().toDateString(),
+      updatedAt: new Date().toDateString(),
+    }
     const { error } = await createClientComponentClient<Database>()
       .from("Shop")
-      .update({ shopName, shopInformation })
-      .eq("id", row.original.id)
+      .insert(valueToInsert)
     if (error) {
       toast({
-        title: "Shop Edit",
-        description: `There was an error while updating the shop informations`,
+        title: "Shop Create",
+        description: `There was an error while creating the shop informations`,
       })
     } else {
       toast({
-        title: "Shop Edit",
-        description: `The shop informations has been successfully updated`,
+        title: "Shop Create",
+        description: `The shop has been successfully created`,
       })
-      const filteredData = currentData.filter((a) => a.id !== row.original.id)
-      filteredData.push({
-        id: row.original.id,
-        shopInformation: shopInformation,
-        shopName: shopName,
-        usersNumber: row.original.usersNumber,
-      })
-      setData(filteredData)
+      setData([
+        ...currentData,
+        {
+          id: valueToInsert.id,
+          shopName: valueToInsert.shopName,
+          shopInformation: valueToInsert.shopInformation,
+          usersNumber: 0,
+        },
+      ])
     }
+    setIsOpen(false)
     setIsLoading(false)
   }
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Edit className=" h-5 w-5 text-muted-foreground/70" />
+    <Dialog open={isOpen}>
+      <DialogTrigger onClick={() => setIsOpen(true)}>
+        {triggerElement}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit shop informations</DialogTitle>
+          <DialogTitle>Create a new shop</DialogTitle>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="shopName"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className={"mt-4"}>
                     <FormLabel>Shop Name</FormLabel>
                     <FormControl>
                       <Input placeholder="ex: My Shop" {...field} />
@@ -125,8 +130,8 @@ export function EditShop({
               <Button className="flex w-full gap-4" disabled={isLoading}>
                 {!isLoading ? (
                   <>
-                    <Edit />
-                    Edit
+                    <Save />
+                    Create
                   </>
                 ) : (
                   <>

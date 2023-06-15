@@ -1,11 +1,13 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import Link from "next/link"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash } from "lucide-react"
 
-import { Shop } from "@/config/tablesSchemas"
+import { Database } from "@/types/supabase"
+import { Shop } from "@/types/tablesSchemas"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,12 +24,22 @@ export const shopColumns = (
   toast: any
 ): ColumnDef<Shop>[] => {
   const confirmDelete = async (postId: string) => {
-    // implement delete shop
-    toast({
-      title: "Shop Delete",
-      description: `Your post has been deleted`,
-    })
-    setData(currentData.filter((value) => value.id !== postId))
+    const { error } = await createClientComponentClient<Database>()
+      .from("Shop")
+      .delete()
+      .eq("id", postId)
+    if (error) {
+      toast({
+        title: "Shop Delete",
+        description: `There was an error when trying to delete`,
+      })
+    } else {
+      toast({
+        title: "Shop Delete",
+        description: `Your shop has been deleted`,
+      })
+      setData(currentData.filter((value) => value.id !== postId))
+    }
   }
   return [
     {
@@ -88,7 +100,7 @@ export const shopColumns = (
                 <Trash className="h-5 w-5 text-red-400" />
               </PopoverTrigger>
               <PopoverContent className={"flex flex-col gap-2 text-center"}>
-                <p>Are you sure to delete this post ?</p>
+                <p>Are you sure to delete this shop ?</p>
                 <Button
                   className={"bg-red-500"}
                   onClick={async () => {

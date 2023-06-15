@@ -2,9 +2,7 @@
 
 import * as React from "react"
 import { useState } from "react"
-import Link from "next/link"
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -15,10 +13,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { ShoppingBag } from "lucide-react"
 
-import { Shop } from "@/config/tablesSchemas"
+import { Shop } from "@/types/tablesSchemas"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -32,6 +30,7 @@ import { DataTableViewOptions } from "@/components/ui/table/data-table-column-to
 import { DataTablePagination } from "@/components/ui/table/data-table-pagination"
 import { useToast } from "@/components/ui/use-toast"
 import { shopColumns } from "@/app/shops/tableDatas/columns"
+import { CreateShop } from "@/app/shops/tableDatas/create-shop"
 
 interface DataTableProps<TData, TValue> {
   data: TData[]
@@ -67,21 +66,29 @@ export function ShopDataTable<TData, TValue>({
       columnVisibility,
     },
   })
-  // const getActualSizeOfColumn = (columnName: string) => {
-  //   switch (columnName) {
-  //     case "postDescription":
-  //       return "w-[40%]"
-  //     case "postSlug":
-  //       return "w-[250px]"
-  //     case "status":
-  //     case "categoryName":
-  //     case "viewCount":
-  //       return "w-[100px]"
-  //   }
-  // }
 
   return (
     <div>
+      <div className="mb-5 flex items-start justify-between gap-2">
+        <h1
+          className="scroll-m-20 text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl"
+          data-testid="headingMain"
+        >
+          Lists of shops
+        </h1>
+
+        <CreateShop
+          setData={setCurrentData}
+          currentData={data as Shop[]}
+          toast={toast}
+          triggerElement={
+            <Button>
+              <ShoppingBag className={"mr-4"} />
+              Create new shop
+            </Button>
+          }
+        />
+      </div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter title..."
