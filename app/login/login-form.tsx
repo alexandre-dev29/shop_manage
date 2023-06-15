@@ -39,7 +39,6 @@ const formSchema = z.object({
 })
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const router = useRouter()
   const supabase = createClientComponentClient<Database>()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,7 +67,7 @@ const LoginForm = () => {
         nookies.set(null, "profile", JSON.stringify(profile.data[0]), {
           maxAge: 34 * 24 * 60 * 60,
           path: "/",
-          domain: "localhost",
+          domain: "/",
         })
       }
     }
