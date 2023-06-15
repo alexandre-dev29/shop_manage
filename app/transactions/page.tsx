@@ -1,5 +1,3 @@
-import Content from "@/app/content"
-
 export default async function IndexPage() {
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -8,17 +6,9 @@ export default async function IndexPage() {
           className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl"
           data-testid="headingMain"
         >
-          This is my shop manage
+          transaction On boarding
         </h1>
-        <p
-          className="max-w-[700px] text-lg text-muted-foreground"
-          data-test="paragraph"
-        >
-          Accessible and customizable components that you can copy and paste
-          into your apps. Free. Open Source. And Next.js 13 Ready.
-        </p>
       </div>
-      <Content />
     </section>
   )
 }

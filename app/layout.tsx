@@ -1,10 +1,12 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
-import Head from "next/head"
+import { cookies } from "next/headers"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
+import { supabaseServer } from "@/lib/supabase_client"
 import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/toaster"
 import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -29,8 +31,9 @@ export const metadata: Metadata = {
 interface RootLayoutProps {
   children: React.ReactNode
 }
+export const dynamic = "force-dynamic"
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -46,6 +49,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <div className="flex-1">{children}</div>
             </div>
             <TailwindIndicator />
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
