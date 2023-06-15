@@ -1,3 +1,5 @@
+import { NavItem } from "@/types/nav"
+
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
@@ -7,6 +9,27 @@ export const siteConfig = {
     {
       title: "Home",
       href: "/",
+      needsAdminRights: false,
     },
-  ],
+    {
+      title: "Users",
+      href: "/users",
+      needsAdminRights: true,
+    },
+    {
+      title: "Transactions",
+      href: "/transactions",
+      needsAdminRights: false,
+    },
+    {
+      title: "Accounts",
+      href: "/accounts",
+      needsAdminRights: true,
+    },
+    {
+      title: "Shops",
+      href: "/shops",
+      needsAdminRights: true,
+    },
+  ] as NavItem[],
 }

@@ -31,14 +31,14 @@ const UserConnection = () => {
         Shop: { shopName: string }
       })
     : null
-  console.log(profile)
-
   return (
     <>
       {profile ? (
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button>{profile.fullName}</Button>
+            <p className={"rounded-xl bg-slate-800 px-4 py-2 text-white"}>
+              {profile.fullName}
+            </p>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem
