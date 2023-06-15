@@ -67,7 +67,6 @@ const LoginForm = () => {
         nookies.set(null, "profile", JSON.stringify(profile.data[0]), {
           maxAge: 34 * 24 * 60 * 60,
           path: "/",
-          domain: "/",
         })
       }
     }
