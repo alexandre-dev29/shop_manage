@@ -8,15 +8,16 @@ import { ShopDataTable } from "@/app/shops/tableDatas/data-table"
 
 export default async function IndexPage() {
   const allShops = await createServerComponentClient<Database>({ cookies })
-    .from("Shop")
-    .select("*, profiles(fullName)")
+    .from("shop")
+    .select("*, profiles(full_name)")
+  console.log(allShops)
   const data =
-    allShops !== null
+    allShops.data !== null
       ? z.array(shopSchema).parse(
-          allShops.data!.map((value) => ({
+          allShops.data.map((value) => ({
             id: value.id,
-            shopName: value.shopName,
-            shopInformation: value.shopInformation,
+            shop_name: value.shop_name,
+            shop_informations: value.shop_informations,
             usersNumber: value.profiles.length,
           }))
         )

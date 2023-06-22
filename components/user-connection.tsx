@@ -7,7 +7,7 @@ import { LogIn, LogOut } from "lucide-react"
 import nookies from "nookies"
 
 import { supabaseClient } from "@/lib/supabase_client"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,9 +26,9 @@ const UserConnection = () => {
   const profileRecup = nookies.get().profile
   const profile = profileRecup
     ? (JSON.parse(nookies.get().profile) as {
-        fullName: string
+        full_name: string
         role: string
-        Shop: { shopName: string }
+        shop: { shop_name: string }
       })
     : null
   return (
@@ -37,7 +37,7 @@ const UserConnection = () => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <p className={"rounded-xl bg-slate-800 px-4 py-2 text-white"}>
-              {profile.fullName}
+              {profile.full_name}
             </p>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -47,25 +46,25 @@ export function CreateShop({
   const form = useForm<z.infer<typeof shopSchemaEditOrCreate>>({
     resolver: zodResolver(shopSchemaEditOrCreate),
     defaultValues: {
-      shopName: "",
-      shopInformation: "",
+      shop_name: "",
+      shop_informations: "",
     },
   })
 
   async function onSubmit({
-    shopName,
-    shopInformation,
+    shop_name,
+    shop_informations,
   }: z.infer<typeof shopSchemaEditOrCreate>) {
     setIsLoading(true)
     const valueToInsert = {
-      shopName,
-      shopInformation,
+      shop_name: shop_name,
+      shop_informations: shop_informations,
       id: uuid(),
       createAt: new Date().toDateString(),
       updatedAt: new Date().toDateString(),
     }
     const { error } = await createClientComponentClient<Database>()
-      .from("Shop")
+      .from("shop")
       .insert(valueToInsert)
     if (error) {
       toast({
@@ -81,8 +80,8 @@ export function CreateShop({
         ...currentData,
         {
           id: valueToInsert.id,
-          shopName: valueToInsert.shopName,
-          shopInformation: valueToInsert.shopInformation,
+          shop_name: valueToInsert.shop_name,
+          shop_informations: valueToInsert.shop_informations,
           usersNumber: 0,
         },
       ])
@@ -102,7 +101,7 @@ export function CreateShop({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="shopName"
+                name="shop_name"
                 render={({ field }) => (
                   <FormItem className={"mt-4"}>
                     <FormLabel>Shop Name</FormLabel>
@@ -115,7 +114,7 @@ export function CreateShop({
               />
               <FormField
                 control={form.control}
-                name="shopInformation"
+                name="shop_informations"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Shop Information</FormLabel>

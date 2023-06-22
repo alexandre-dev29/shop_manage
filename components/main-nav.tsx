@@ -16,9 +16,9 @@ export function MainNav({ items }: MainNavProps) {
   const profileRecup = nookies.get().profile
   const profile = profileRecup
     ? (JSON.parse(nookies.get().profile) as {
-        fullName: string
+        full_name: string
         role: string
-        Shop: { shopName: string }
+        shop: { shop_name: string }
       })
     : null
   return (
@@ -26,7 +26,7 @@ export function MainNav({ items }: MainNavProps) {
       <Link href="/" className="flex items-center space-x-2">
         <ShoppingBag className="h-6 w-6" />
         <span className="inline-block font-bold">
-          {profile ? profile.Shop.shopName : ""}
+          {profile ? profile.shop.shop_name : ""}
         </span>
       </Link>
       {items?.length ? (

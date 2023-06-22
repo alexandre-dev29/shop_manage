@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from "react"
-import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Loader2, LogIn } from "lucide-react"
@@ -61,7 +60,7 @@ const LoginForm = () => {
     } else {
       const profile = await supabase
         .from("profiles")
-        .select("fullName, role, Shop(shopName)")
+        .select("id,full_name, role, shop(shop_name)")
         .eq("id", result.data.user.id)
       if (profile.data) {
         nookies.set(null, "profile", JSON.stringify(profile.data[0]), {
@@ -69,8 +68,9 @@ const LoginForm = () => {
           path: "/",
         })
       }
+      window.location.replace("/")
     }
-    window.location.replace("/")
+
     setIsLoading(false)
   }
   return (
@@ -78,7 +78,7 @@ const LoginForm = () => {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Login to your account</CardTitle>
         <CardDescription>
-          Enter your email and password below to login
+          Enter your phone number and password below to login
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -89,9 +89,9 @@ const LoginForm = () => {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Phone number</FormLabel>
                   <FormControl>
-                    <Input placeholder="a@gmail.com" {...field} />
+                    <Input placeholder="ex: +2439700000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

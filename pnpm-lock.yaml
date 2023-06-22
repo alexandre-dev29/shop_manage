@@ -37,6 +37,9 @@ dependencies:
   '@supabase/auth-helpers-nextjs':
     specifier: ^0.7.2
     version: 0.7.2(@supabase/supabase-js@2.24.0)
+  '@supabase/realtime-js':
+    specifier: ^2.7.3
+    version: 2.7.3
   '@supabase/supabase-js':
     specifier: ^2.24.0
     version: 2.24.0(encoding@0.1.13)
@@ -91,6 +94,9 @@ dependencies:
   zod:
     specifier: ^3.21.4
     version: 3.21.4
+  zustand:
+    specifier: ^4.3.8
+    version: 4.3.8(react@18.2.0)
 
 devDependencies:
   '@ianvs/prettier-plugin-sort-imports':
@@ -1789,15 +1795,15 @@ packages:
     dev: false
 
   /@supabase/postgrest-js@1.7.0(encoding@0.1.13):
-    resolution: {integrity: sha512-wLADHZ5jm7LljF4GigK0H2vc1wGupBY2hGYfb4fVo0UuyMftmA6tOYy+ZpMH/vPq01CUFwXGwvIke6kyqh/QDg==}
+    resolution: { integrity: sha512-wLADHZ5jm7LljF4GigK0H2vc1wGupBY2hGYfb4fVo0UuyMftmA6tOYy+ZpMH/vPq01CUFwXGwvIke6kyqh/QDg== }
     dependencies:
       cross-fetch: 3.1.6(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@supabase/realtime-js@2.7.2:
-    resolution: {integrity: sha512-Fi6xAl5PUkqnjl3wo4rdcQIbMG3+yTRX1aUZe/yfvTG84RMvmCXJ1yN6MmafVLeZpU1xkaz5Vx4L0tnHcLiy6w==}
+  /@supabase/realtime-js@2.7.3:
+    resolution: { integrity: sha512-c7TzL81sx2kqyxsxcDduJcHL9KJdCOoKimGP6lQSqiZKX42ATlBZpWbyy9KFGFBjAP4nyopMf5JhPi2ZH9jyNw== }
     dependencies:
       '@types/phoenix': 1.6.0
       '@types/websocket': 1.0.5
@@ -1807,7 +1813,7 @@ packages:
     dev: false
 
   /@supabase/storage-js@2.5.1(encoding@0.1.13):
-    resolution: {integrity: sha512-nkR0fQA9ScAtIKA3vNoPEqbZv1k5B5HVRYEvRWdlP6mUpFphM9TwPL2jZ/ztNGMTG5xT6SrHr+H7Ykz8qzbhjw==}
+    resolution: { integrity: sha512-nkR0fQA9ScAtIKA3vNoPEqbZv1k5B5HVRYEvRWdlP6mUpFphM9TwPL2jZ/ztNGMTG5xT6SrHr+H7Ykz8qzbhjw== }
     dependencies:
       cross-fetch: 3.1.6(encoding@0.1.13)
     transitivePeerDependencies:
@@ -1820,7 +1826,7 @@ packages:
       '@supabase/functions-js': 2.1.1(encoding@0.1.13)
       '@supabase/gotrue-js': 2.29.0(encoding@0.1.13)
       '@supabase/postgrest-js': 1.7.0(encoding@0.1.13)
-      '@supabase/realtime-js': 2.7.2
+      '@supabase/realtime-js': 2.7.3
       '@supabase/storage-js': 2.5.1(encoding@0.1.13)
       cross-fetch: 3.1.6(encoding@0.1.13)
     transitivePeerDependencies:
@@ -6243,9 +6249,17 @@ packages:
       tslib: 2.5.3
     dev: false
 
+  /use-sync-external-store@1.2.0(react@18.2.0):
+    resolution: { integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA== }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /utf-8-validate@5.0.10:
-    resolution: {integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ==}
-    engines: {node: '>=6.14.2'}
+    resolution: { integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ== }
+    engines: { node: '>=6.14.2' }
     requiresBuild: true
     dependencies:
       node-gyp-build: 4.6.0
@@ -6482,10 +6496,26 @@ packages:
     dev: true
 
   /yocto-queue@0.1.0:
-    resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
-    engines: {node: '>=10'}
+    resolution: { integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q== }
+    engines: { node: '>=10' }
     dev: true
 
   /zod@3.21.4:
-    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    resolution: { integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw== }
+    dev: false
+
+  /zustand@4.3.8(react@18.2.0):
+    resolution: { integrity: sha512-4h28KCkHg5ii/wcFFJ5Fp+k1J3gJoasaIbppdgZFO4BPJnsNxL0mQXBSFgOgAdCdBj35aDTPvdAJReTMntFPGg== }
+    engines: { node: '>=12.7.0' }
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
