@@ -37,8 +37,8 @@ export function EditShop({
 }: {
   row: Row<{
     id: string
-    shopInformation: string
-    shopName: string
+    shop_informations: string
+    shop_name: string
     usersNumber: number
   }>
   setData: any
@@ -50,19 +50,19 @@ export function EditShop({
   const form = useForm<z.infer<typeof shopSchemaEditOrCreate>>({
     resolver: zodResolver(shopSchemaEditOrCreate),
     defaultValues: {
-      shopName: row.original.shopName,
-      shopInformation: row.original.shopInformation,
+      shop_name: row.original.shop_name,
+      shop_informations: row.original.shop_informations,
     },
   })
 
   async function onSubmit({
-    shopName,
-    shopInformation,
+    shop_name,
+    shop_informations,
   }: z.infer<typeof shopSchemaEditOrCreate>) {
     setIsLoading(true)
     const { error } = await createClientComponentClient<Database>()
-      .from("Shop")
-      .update({ shopName, shopInformation })
+      .from("shop")
+      .update({ shop_name, shop_informations })
       .eq("id", row.original.id)
     if (error) {
       toast({
@@ -77,8 +77,8 @@ export function EditShop({
       const filteredData = currentData.filter((a) => a.id !== row.original.id)
       filteredData.push({
         id: row.original.id,
-        shopInformation: shopInformation,
-        shopName: shopName,
+        shop_informations: shop_informations,
+        shop_name: shop_name,
         usersNumber: row.original.usersNumber,
       })
       setData(filteredData)
@@ -97,7 +97,7 @@ export function EditShop({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="shopName"
+                name="shop_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Shop Name</FormLabel>
@@ -110,7 +110,7 @@ export function EditShop({
               />
               <FormField
                 control={form.control}
-                name="shopInformation"
+                name="shop_informations"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Shop Information</FormLabel>

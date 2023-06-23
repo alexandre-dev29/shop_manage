@@ -25,7 +25,7 @@ export const shopColumns = (
 ): ColumnDef<Shop>[] => {
   const confirmDelete = async (postId: string) => {
     const { error } = await createClientComponentClient<Database>()
-      .from("Shop")
+      .from("shop")
       .delete()
       .eq("id", postId)
     if (error) {
@@ -43,7 +43,7 @@ export const shopColumns = (
   }
   return [
     {
-      accessorKey: "shopName",
+      accessorKey: "shop_name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Shop Name" />
       ),
@@ -55,20 +55,22 @@ export const shopColumns = (
               "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-base"
             }
           >
-            {row.getValue("shopName")}
+            {row.getValue("shop_name")}
           </Link>
         )
       },
     },
     {
-      accessorKey: "shopInformation",
+      accessorKey: "shop_informations",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Shop Information" />
       ),
       cell: ({ row }) => {
         return (
           <div className={"line-clamp-2"}>
-            <p className={"line-clamp-2"}>{row.getValue("shopInformation")}</p>
+            <p className={"line-clamp-2"}>
+              {row.getValue("shop_informations")}
+            </p>
           </div>
         )
       },

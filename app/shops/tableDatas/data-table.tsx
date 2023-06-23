@@ -93,10 +93,10 @@ export function ShopDataTable<TData, TValue>({
         <Input
           placeholder="Filter title..."
           value={
-            (table.getColumn("shopName")?.getFilterValue() as string) ?? ""
+            (table.getColumn("shop_name")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("shopName")?.setFilterValue(event.target.value)
+            table.getColumn("shop_name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

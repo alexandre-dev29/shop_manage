@@ -4,9 +4,10 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  schemas  = ["auth", "public"]
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["auth", "public"]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -272,70 +273,71 @@ model users {
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model profiles {
   id          String        @id @db.Uuid
-  fullName    String
-  role        Role          @default(User)
+  full_name   String
+  role        role          @default(User)
   users       users         @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  Shop        Shop?         @relation(fields: [shopId], references: [id])
-  shopId      String?       @db.Uuid
-  Account     Account[]
-  Transations Transations[]
+  shop        shop          @relation(fields: [shopid], references: [id])
+  shopid      String        @db.Uuid
+  account     account[]
+  transations transaction[]
 
   @@schema("public")
 }
 
-model Shop {
-  id              String     @id @default(uuid()) @db.Uuid
-  shopName        String     @unique
-  shopInformation String     @db.Text
-  createAt        DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  Users           profiles[]
+model shop {
+  id                String     @id @default(uuid()) @db.Uuid
+  shop_name         String     @unique
+  shop_informations String     @db.Text
+  createAt          DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  Users             profiles[]
 
   @@schema("public")
 }
 
-model Account {
-  phoneNumber String       @id @default(uuid()) @db.Uuid
-  agentCode   String       @unique
-  agentName   String
-  Users       profiles[]
-  SubAccount  SubAccount[]
+model account {
+  phonenumber  String        @id @db.VarChar()
+  agentcode    String        @unique
+  agentname    String
+  users        profiles[]
+  sub_accounts sub_account[]
 
   @@schema("public")
 }
 
-model SubAccount {
-  id            String        @id @default(uuid()) @db.Uuid
-  type          String
-  devise        Devise
-  amount        Float
-  Account       Account       @relation(fields: [accountNumber], references: [phoneNumber])
-  Transations   Transations[]
-  accountNumber String        @db.Uuid
+model sub_account {
+  id               String           @id @default(uuid()) @db.Uuid
+  type             String
+  devise           devise
+  amount           Float
+  transation_genre genre_transation @default(Airtel)
+  account          account          @relation(fields: [account_number], references: [phonenumber])
+  transations      transaction[]
+  account_number   String           @db.VarChar()
 
   @@schema("public")
 }
 
-model Transations {
-  id              String          @id @default(uuid()) @db.Uuid
-  transationGenre GenreTransation
-  transationType  TypeTransaction
-  amount          Float
-  numeroReference String
-  identityPiece   String
-  phoneNumber     String
-  clientName      String
-  SubAccount      SubAccount      @relation(fields: [subAccountId], references: [id])
-  User            profiles        @relation(fields: [usersId], references: [id])
-  usersId         String          @db.Uuid
-  createAt        DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  subAccountId    String          @db.Uuid
+model transaction {
+  id               String           @id @default(uuid()) @db.Uuid
+  transation_type  type_transaction
+  amount           Float
+  numero_reference String
+  identityPiece    String
+  phoneNumber      String
+  amount_before    Float            @default(0)
+  clientName       String
+  subaccount       sub_account      @relation(fields: [sub_account_id], references: [id])
+  user             profiles         @relation(fields: [users_id], references: [id])
+  users_id         String           @db.Uuid
+  createAt         DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  sub_account_id   String           @db.Uuid
 
   @@schema("public")
 }
 
-enum Role {
+enum role {
   Admin
   Manager
   User
@@ -343,17 +345,18 @@ enum Role {
   @@schema("public")
 }
 
-enum GenreTransation {
+enum genre_transation {
   Equity
   Airtel
   Vodacom
   Africell
   Orange
+  MainAccount
 
   @@schema("public")
 }
 
-enum TypeTransaction {
+enum type_transaction {
   Depot
   Retrait
   Approvisionement
@@ -361,7 +364,7 @@ enum TypeTransaction {
   @@schema("public")
 }
 
-enum Devise {
+enum devise {
   CDF
   USD
 

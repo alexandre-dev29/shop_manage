@@ -9,6 +9,7 @@ export default async function IndexPage() {
           Lists of users
         </h1>
       </div>
+      <div></div>
     </section>
   )
 }
