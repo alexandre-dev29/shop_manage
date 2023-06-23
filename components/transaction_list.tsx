@@ -1,18 +1,23 @@
 "use client"
 
 import React from "react"
-import { account, sub_account } from "@prisma/client"
+import { account, profiles, sub_account, transaction } from "@prisma/client"
 import { DollarSign } from "lucide-react"
 import nookies from "nookies"
+import { z } from "zod"
 
+import { TransactionEntity, transactionSchema } from "@/types/tablesSchemas"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import CreateTransaction from "@/components/main-page/create-transaction"
+import { TransactionDataTable } from "@/components/main-page/transaction-table/transaction-datatable"
 
 const Transaction_list = ({
   accountList,
+  transactionList,
 }: {
   accountList: (account & { sub_accounts: sub_account[] })[]
+  transactionList: (transaction & { subaccount: sub_account; user: profiles })[]
 }) => {
   const { toast } = useToast()
   const profileRecup = nookies.get().profile
@@ -25,22 +30,47 @@ const Transaction_list = ({
       })
     : null
 
+  const listOfEntity =
+    transactionList !== null
+      ? z.array(transactionSchema).parse(
+          transactionList.map(
+            (value) =>
+              ({
+                id: value.id,
+                transaction_type: value.transation_type,
+                amount_before: value.amount_before,
+                clientName: value.clientName,
+                numero_reference: value.numero_reference,
+                phoneNumber: value.phoneNumber,
+                identityPiece: value.identityPiece,
+                amount: value.amount,
+                account_concerned: value.subaccount.type,
+                createdAt: value.createAt,
+                updatedAt: value.updatedAt,
+                devise: value.subaccount.devise,
+              } as TransactionEntity)
+          )
+        )
+      : []
   return (
-    <div className={"flex items-center justify-between"}>
-      <h2 className={"text-xl font-bold"}>List of transactions</h2>
-      <CreateTransaction
-        profileId={`${profile?.id}`}
-        setData={() => {}}
-        accountList={accountList}
-        toast={toast}
-        triggerElement={
-          <Button>
-            <DollarSign className={"mr-4"} />
-            New Transaction
-          </Button>
-        }
-      />
-    </div>
+    <>
+      <div className={"flex items-center justify-between"}>
+        <h2 className={"text-xl font-bold"}>List of transactions</h2>
+        <CreateTransaction
+          profileId={`${profile?.id}`}
+          setData={() => {}}
+          accountList={accountList}
+          toast={toast}
+          triggerElement={
+            <Button>
+              <DollarSign className={"mr-4"} />
+              New Transaction
+            </Button>
+          }
+        />
+      </div>
+      <TransactionDataTable data={listOfEntity} />
+    </>
   )
 }
 

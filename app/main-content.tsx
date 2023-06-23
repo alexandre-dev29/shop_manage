@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { account, profiles, sub_account } from "@prisma/client"
+import { account, profiles, sub_account, transaction } from "@prisma/client"
 // @ts-ignore
 import { RealtimePostgresChangesPayload } from "@supabase/realtime-js"
 import nookies from "nookies"
@@ -36,13 +36,14 @@ const reactToUpdateAccount = (
 }
 const MainContent = ({
   accountList,
+  transactionList,
 }: {
   accountList: (profiles & {
     account: (account & { sub_accounts: sub_account[] })[]
   })[]
+  transactionList: (transaction & { subaccount: sub_account; user: profiles })[]
 }) => {
-  const profileRecup = nookies.get().profile
-  const profile = profileRecup
+  const profile = nookies.get().profile
     ? (JSON.parse(nookies.get().profile) as {
         id: string
         full_name: string
@@ -53,10 +54,11 @@ const MainContent = ({
   const accountPured = accountList.filter(
     (value: any) => value.id === profile?.id
   )[0].account
+
   const [listAccount, setListAccount] =
     useState<(account & { sub_accounts: sub_account[] })[]>(accountPured)
 
-  const channel = supabaseClient
+  supabaseClient
     .channel("table-db-changes")
     .on(
       "postgres_changes",
@@ -71,7 +73,10 @@ const MainContent = ({
       <div className="">
         <SubAccountList accountList={listAccount} />
       </div>
-      <Transaction_list accountList={listAccount} />
+      <Transaction_list
+        accountList={listAccount}
+        transactionList={transactionList}
+      />
     </>
   )
 }
