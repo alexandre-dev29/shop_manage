@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { genre_transation } from "@prisma/client"
 import { z } from "zod"
 
 import { transactionSchemaCreateOrEdit } from "@/types/tablesSchemas"
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
           include: {
             sub_accounts: {
               where: {
-                transation_genre: genre_transation.MainAccount,
+                transation_genre: "MainAccount",
                 AND: { devise: currentSubAccount!.devise },
               },
             },
