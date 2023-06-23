@@ -6,7 +6,7 @@ export default async function IndexPage() {
           className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl"
           data-testid="headingMain"
         >
-          transaction On boarding
+          List of transactions
         </h1>
       </div>
     </section>
