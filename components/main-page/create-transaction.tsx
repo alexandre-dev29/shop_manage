@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import { useCurrentSubAccountState } from "@/states/state-management"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { account, sub_account } from "@prisma/client"
 import { Loader2, Save } from "lucide-react"
@@ -38,6 +39,7 @@ const CreateTransaction = ({
   triggerElement,
   accountList,
   profileId,
+  toast,
 }: {
   setData: any
   accountList: (account & { sub_accounts: sub_account[] })[]
@@ -47,6 +49,7 @@ const CreateTransaction = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const { setCurrentSubAccount } = useCurrentSubAccountState()
   const listOfSubAccounts: sub_account[] = []
 
   accountList
@@ -79,8 +82,17 @@ const CreateTransaction = ({
       },
       body: JSON.stringify(values),
     })
+    const currentSubAccount = listOfSubAccounts.filter(
+      (value) => value.id === values.sub_account_id
+    )[0]
+    setCurrentSubAccount(currentSubAccount)
     const finalResponse = await response.json()
     if (finalResponse.messageType === "success") {
+      toast({
+        title: "Adding transaction",
+        description: "The transaction was added successfully",
+      })
+
       form.reset({
         user_id: "",
         clientName: "",

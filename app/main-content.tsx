@@ -1,39 +1,17 @@
 "use client"
 
 import React, { useState } from "react"
+import { useCurrentSubAccountState } from "@/states/state-management"
 import { account, profiles, sub_account, transaction } from "@prisma/client"
 // @ts-ignore
 import { RealtimePostgresChangesPayload } from "@supabase/realtime-js"
 import nookies from "nookies"
 
 import { supabaseClient } from "@/lib/supabase_client"
+import { reactToInsertTransaction, reactToUpdateAccount } from "@/lib/utils"
 import SubAccountList from "@/components/sub-account-list"
 import Transaction_list from "@/components/transaction_list"
 
-const reactToUpdateAccount = (
-  payload: RealtimePostgresChangesPayload<{ [p: string]: any }>,
-  currentListOfObjects: (account & { sub_accounts: sub_account[] })[],
-  setCurrentListOfObject: React.Dispatch<
-    React.SetStateAction<(account & { sub_accounts: sub_account[] })[]>
-  >
-) => {
-  const currentSubAccount = payload.new as sub_account
-  const oldAccountNumber = currentListOfObjects.filter(
-    (value) => value.phonenumber === currentSubAccount.account_number
-  )[0]
-  const curredOldAccountNumber = oldAccountNumber.sub_accounts.filter(
-    (value) => value.id != currentSubAccount.id
-  )
-
-  const puredAccount = currentListOfObjects.filter(
-    (value) => value.phonenumber !== currentSubAccount.account_number
-  )
-  puredAccount.push({
-    ...oldAccountNumber,
-    sub_accounts: [...curredOldAccountNumber, currentSubAccount],
-  })
-  setCurrentListOfObject(puredAccount)
-}
 const MainContent = ({
   accountList,
   transactionList,
@@ -43,6 +21,7 @@ const MainContent = ({
   })[]
   transactionList: (transaction & { subaccount: sub_account; user: profiles })[]
 }) => {
+  const { currentSubAccount } = useCurrentSubAccountState()
   const profile = nookies.get().profile
     ? (JSON.parse(nookies.get().profile) as {
         id: string
@@ -57,14 +36,32 @@ const MainContent = ({
 
   const [listAccount, setListAccount] =
     useState<(account & { sub_accounts: sub_account[] })[]>(accountPured)
+  const [listTransaction, setListTransaction] =
+    useState<(transaction & { subaccount: sub_account; user: profiles })[]>(
+      transactionList
+    )
 
   supabaseClient
-    .channel("table-db-changes")
+    .channel("db-changes")
     .on(
       "postgres_changes",
-      { event: "*", schema: "public", table: "sub_account" },
+      { event: "UPDATE", schema: "public", table: "sub_account" },
       (payload) => {
+        console.log(payload)
         reactToUpdateAccount(payload, listAccount, setListAccount)
+      }
+    )
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "transaction" },
+      (payload) => {
+        console.log(payload)
+        reactToInsertTransaction(
+          payload,
+          listTransaction,
+          setListTransaction,
+          currentSubAccount
+        )
       }
     )
     .subscribe()
@@ -75,7 +72,7 @@ const MainContent = ({
       </div>
       <Transaction_list
         accountList={listAccount}
-        transactionList={transactionList}
+        transactionList={listTransaction}
       />
     </>
   )

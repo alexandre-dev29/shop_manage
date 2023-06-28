@@ -10,7 +10,6 @@ export default async function IndexPage() {
   const allShops = await createServerComponentClient<Database>({ cookies })
     .from("shop")
     .select("*, profiles(full_name)")
-  console.log(allShops)
   const data =
     allShops.data !== null
       ? z.array(shopSchema).parse(

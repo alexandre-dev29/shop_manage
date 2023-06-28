@@ -2,16 +2,9 @@
 
 import React from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { Trash } from "lucide-react"
 
 import { TransactionEntity } from "@/types/tablesSchemas"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header"
 
 export const transactionColumns = (
@@ -124,27 +117,40 @@ export const transactionColumns = (
         )
       },
     },
-
     {
-      id: "actions",
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Date transaction" />
+      ),
       cell: ({ row }) => {
         return (
-          <div className={"flex items-center gap-2"}>
-            <Popover>
-              <PopoverTrigger>
-                <Trash className="h-5 w-5 text-red-400" />
-              </PopoverTrigger>
-              <PopoverContent className={"flex flex-col gap-2 text-center"}>
-                <p>Are you sure to delete this shop ?</p>
-                <Button className={"bg-red-500"}>
-                  <Trash className="h-5 w-5" />
-                  Delete
-                </Button>
-              </PopoverContent>
-            </Popover>
-          </div>
+          <p className={"line-clamp-2"}>
+            {row.original.createdAt.toLocaleDateString("fr-Fr")}
+          </p>
         )
       },
     },
+
+    // {
+    //   id: "actions",
+    //   cell: ({ row }) => {
+    //     return (
+    //       <div className={"flex items-center gap-2"}>
+    //         <Popover>
+    //           <PopoverTrigger>
+    //             <Trash className="h-5 w-5 text-red-400" />
+    //           </PopoverTrigger>
+    //           <PopoverContent className={"flex flex-col gap-2 text-center"}>
+    //             <p>Are you sure to delete this shop ?</p>
+    //             <Button className={"bg-red-500"}>
+    //               <Trash className="h-5 w-5" />
+    //               Delete
+    //             </Button>
+    //           </PopoverContent>
+    //         </Popover>
+    //       </div>
+    //     )
+    //   },
+    // },
   ]
 }
