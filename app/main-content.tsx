@@ -7,8 +7,6 @@ import { account, profiles, sub_account, transaction } from "@prisma/client"
 import { RealtimePostgresChangesPayload } from "@supabase/realtime-js"
 import nookies from "nookies"
 
-import { supabaseClient } from "@/lib/supabase_client"
-import { reactToInsertTransaction, reactToUpdateAccount } from "@/lib/utils"
 import SubAccountList from "@/components/sub-account-list"
 import Transaction_list from "@/components/transaction_list"
 
@@ -41,30 +39,30 @@ const MainContent = ({
       transactionList
     )
 
-  supabaseClient
-    .channel("db-changes")
-    .on(
-      "postgres_changes",
-      { event: "UPDATE", schema: "public", table: "sub_account" },
-      (payload) => {
-        console.log(payload)
-        reactToUpdateAccount(payload, listAccount, setListAccount)
-      }
-    )
-    .on(
-      "postgres_changes",
-      { event: "INSERT", schema: "public", table: "transaction" },
-      (payload) => {
-        console.log(payload)
-        reactToInsertTransaction(
-          payload,
-          listTransaction,
-          setListTransaction,
-          currentSubAccount
-        )
-      }
-    )
-    .subscribe()
+  // supabaseClient
+  //   .channel("db-changes")
+  //   .on(
+  //     "postgres_changes",
+  //     { event: "UPDATE", schema: "public", table: "sub_account" },
+  //     (payload) => {
+  //       console.log(payload)
+  //       reactToUpdateAccount(payload, listAccount, setListAccount)
+  //     }
+  //   )
+  //   .on(
+  //     "postgres_changes",
+  //     { event: "INSERT", schema: "public", table: "transaction" },
+  //     (payload) => {
+  //       console.log(payload)
+  //       reactToInsertTransaction(
+  //         payload,
+  //         listTransaction,
+  //         setListTransaction,
+  //         currentSubAccount
+  //       )
+  //     }
+  //   )
+  //   .subscribe()
   return (
     <>
       <div className="">

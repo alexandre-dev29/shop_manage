@@ -82,10 +82,10 @@ const CreateTransaction = ({
       },
       body: JSON.stringify(values),
     })
-    const currentSubAccount = listOfSubAccounts.filter(
-      (value) => value.id === values.sub_account_id
-    )[0]
-    setCurrentSubAccount(currentSubAccount)
+    // const currentSubAccount = listOfSubAccounts.filter(
+    //   (value) => value.id === values.sub_account_id
+    // )[0]
+    // setCurrentSubAccount(currentSubAccount)
     const finalResponse = await response.json()
     if (finalResponse.messageType === "success") {
       toast({
@@ -107,6 +107,7 @@ const CreateTransaction = ({
     }
     setIsOpen(false)
     setIsLoading(false)
+    window.location.reload()
   }
 
   return (
