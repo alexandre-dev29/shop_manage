@@ -52,6 +52,11 @@ export const reactToInsertTransaction = (
 
   setCurrentListOfObject([
     ...currentListOfObjects,
-    { ...currentTransaction, subaccount: currentSubAccount },
+    {
+      ...currentTransaction,
+      createAt: new Date(currentTransaction.createAt),
+      updatedAt: new Date(currentTransaction.updatedAt),
+      subaccount: currentSubAccount,
+    },
   ])
 }
