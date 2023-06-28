@@ -12,30 +12,29 @@ export async function POST(request: Request) {
     const currentSubAccount = await prisma.sub_account.findUnique({
       where: { id: requestValues.sub_account_id },
     })
-    const mainAccount = await prisma.profiles.findUnique({
-      where: { id: requestValues.user_id },
+    const mainAccount = await prisma.account.findFirst({
+      where: {
+        users: { some: { id: requestValues.user_id } },
+        agentcode: { contains: "Main" },
+      },
       include: {
-        account: {
-          where: { agentcode: { contains: "Main" } },
-          take: 1,
-          include: {
-            sub_accounts: {
-              where: {
-                transation_genre: "MainAccount",
-                AND: { devise: currentSubAccount!.devise },
-              },
-            },
+        sub_accounts: {
+          where: {
+            transation_genre: "MainAccount",
+            AND: { devise: currentSubAccount!.devise },
           },
         },
       },
     })
-    const mainSubAccount = mainAccount?.account[0].sub_accounts[0]
+
+    const mainSubAccount = mainAccount?.sub_accounts[0]
     const createATransaction = prisma.transaction.create({
       data: {
         clientName: requestValues.clientName,
         transation_type: requestValues.transaction_type,
         numero_reference: requestValues.numero_reference,
         amount: requestValues.amount,
+        amount_before: currentSubAccount!.amount,
         phoneNumber: requestValues.phoneNumber,
         identityPiece: requestValues.identityPiece,
         subaccount: { connect: { id: requestValues.sub_account_id } },

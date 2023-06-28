@@ -1,12 +1,10 @@
-import { account, sub_account, transaction } from "@prisma/client"
+import { sub_account, transaction } from "@prisma/client"
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
 
-interface IAccountListState {
-  listOfAccount: (account & { sub_accounts: sub_account[] })[]
-  setListOfAccount: (
-    listAccount: (account & { sub_accounts: sub_account[] })[]
-  ) => void
+interface ISubAccountSelectedState {
+  currentSubAccount: sub_account
+  setCurrentSubAccount: (currentSubAccount: sub_account) => void
 }
 
 interface ITransactionsListState {
@@ -14,20 +12,25 @@ interface ITransactionsListState {
   setListOfTransaction: (listTransaction: transaction[]) => void
 }
 
-export const useAccountListState = create<IAccountListState>()(
+export const useCurrentSubAccountState = create<ISubAccountSelectedState>()(
   devtools(
     persist(
       (setState, getState) => ({
-        listOfAccount: [],
-        setListOfAccount: (
-          listAccount: (account & { sub_accounts: sub_account[] })[]
-        ) => {
+        currentSubAccount: {
+          id: "",
+          amount: 0,
+          type: "",
+          account_number: "",
+          devise: "USD",
+          transation_genre: "Africell",
+        },
+        setCurrentSubAccount: (currentSubAccount: sub_account) => {
           setState(() => ({
-            listOfAccount: listAccount,
+            currentSubAccount: currentSubAccount,
           }))
         },
       }),
-      { name: "appListOfAccounts" }
+      { name: "currentSubAccount" }
     )
   )
 )

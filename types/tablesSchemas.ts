@@ -39,10 +39,15 @@ export const transactionSchema = z.object({
     .min(2, { message: "veuillez ecrire un numero de reference" }),
   identityPiece: z.string().min(10, { message: "numero de piece d'identitee" }),
   phoneNumber: z.string().min(10, { message: "numero de telephone" }),
+  amount_before: z.number(),
+  devise: z.enum(["USD", "CDF"]),
   clientName: z
     .string()
     .min(5, { message: "veuillez ecrire le nom du client" }),
-  sub_account_id: z.string().uuid(),
+  account_concerned: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  id: z.string().uuid(),
 })
+
+export type TransactionEntity = z.infer<typeof transactionSchema>
