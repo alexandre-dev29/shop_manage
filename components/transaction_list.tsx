@@ -2,13 +2,14 @@
 
 import React from "react"
 import { account, profiles, sub_account, transaction } from "@prisma/client"
-import { DollarSign } from "lucide-react"
+import { DollarSign, Plus } from "lucide-react"
 import nookies from "nookies"
 import { z } from "zod"
 
 import { TransactionEntity, transactionSchema } from "@/types/tablesSchemas"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
+import CreateApprovisionnement from "@/components/main-page/create-approvisionnement"
 import CreateTransaction from "@/components/main-page/create-transaction"
 import { TransactionDataTable } from "@/components/main-page/transaction-table/transaction-datatable"
 
@@ -56,18 +57,31 @@ const Transaction_list = ({
     <>
       <div className={"flex items-center justify-between"}>
         <h2 className={"text-xl font-bold"}>List of transactions</h2>
-        <CreateTransaction
-          profileId={`${profile?.id}`}
-          setData={() => {}}
-          accountList={accountList}
-          toast={toast}
-          triggerElement={
-            <Button>
-              <DollarSign className={"mr-4"} />
-              New Transaction
-            </Button>
-          }
-        />
+        <div>
+          <CreateTransaction
+            profileId={`${profile?.id}`}
+            setData={() => {}}
+            accountList={accountList}
+            toast={toast}
+            triggerElement={
+              <Button>
+                <DollarSign className={"mr-2"} />
+                Transaction
+              </Button>
+            }
+          />
+          <CreateApprovisionnement
+            accountList={accountList}
+            profileId={`${profile?.id}`}
+            toast={toast}
+            triggerElement={
+              <Button className={"ml-2"}>
+                <Plus className={"mr-2"} />
+                Approvisionner
+              </Button>
+            }
+          />
+        </div>
       </div>
       <TransactionDataTable data={listOfEntity} />
     </>
