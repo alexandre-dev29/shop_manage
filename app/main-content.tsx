@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from "react"
-import { useCurrentSubAccountState } from "@/states/state-management"
 import { account, profiles, sub_account, transaction } from "@prisma/client"
 // @ts-ignore
 import { RealtimePostgresChangesPayload } from "@supabase/realtime-js"
@@ -19,7 +18,6 @@ const MainContent = ({
   })[]
   transactionList: (transaction & { subaccount: sub_account; user: profiles })[]
 }) => {
-  const { currentSubAccount } = useCurrentSubAccountState()
   const profile = nookies.get().profile
     ? (JSON.parse(nookies.get().profile) as {
         id: string
@@ -39,30 +37,6 @@ const MainContent = ({
       transactionList
     )
 
-  // supabaseClient
-  //   .channel("db-changes")
-  //   .on(
-  //     "postgres_changes",
-  //     { event: "UPDATE", schema: "public", table: "sub_account" },
-  //     (payload) => {
-  //       console.log(payload)
-  //       reactToUpdateAccount(payload, listAccount, setListAccount)
-  //     }
-  //   )
-  //   .on(
-  //     "postgres_changes",
-  //     { event: "INSERT", schema: "public", table: "transaction" },
-  //     (payload) => {
-  //       console.log(payload)
-  //       reactToInsertTransaction(
-  //         payload,
-  //         listTransaction,
-  //         setListTransaction,
-  //         currentSubAccount
-  //       )
-  //     }
-  //   )
-  //   .subscribe()
   return (
     <>
       <div className="">

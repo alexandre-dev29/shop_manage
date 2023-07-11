@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       .select("*")
       .eq("id", requestValues.sub_account_id)
       .single()
+
     const currentAccount = await supabase
       .from("account")
       .select("*")
@@ -32,6 +33,23 @@ export async function POST(request: Request) {
       .single()
 
     const mainSubAccount = selectedMainSubAccount.data
+    if (requestValues.transaction_type === "Depot") {
+      if (currentSubAccount.data!.amount < requestValues.amount) {
+        return NextResponse.json({
+          messageType: "error",
+          message:
+            "The amount you provide is greater than the current amount available",
+        })
+      }
+    } else if (requestValues.transaction_type === "Retrait") {
+      if (mainSubAccount!.amount < requestValues.amount) {
+        return NextResponse.json({
+          messageType: "error",
+          message:
+            "The amount you provide is greater than the current amount available",
+        })
+      }
+    }
     const createATransaction = prisma.transaction.create({
       data: {
         clientName: requestValues.clientName,
@@ -79,7 +97,6 @@ export async function POST(request: Request) {
       updateMoney,
       updateMainAccount,
     ])
-
     return NextResponse.json({ messageType: "success" })
   } catch (e) {
     return NextResponse.json({ messageType: "error" })

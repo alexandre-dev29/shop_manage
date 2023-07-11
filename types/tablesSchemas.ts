@@ -37,8 +37,8 @@ export const transactionSchema = z.object({
   numero_reference: z
     .string()
     .min(2, { message: "veuillez ecrire un numero de reference" }),
-  identityPiece: z.string().min(10, { message: "numero de piece d'identitee" }),
-  phoneNumber: z.string().min(10, { message: "numero de telephone" }),
+  identityPiece: z.string().min(4, { message: "numero de piece d'identitee" }),
+  phoneNumber: z.string().min(4, { message: "numero de telephone" }),
   amount_before: z.number(),
   devise: z.enum(["USD", "CDF"]),
   clientName: z

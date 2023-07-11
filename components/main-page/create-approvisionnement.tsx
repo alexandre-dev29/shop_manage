@@ -1,14 +1,12 @@
 "use client"
 
 import React, { useState } from "react"
-import { useCurrentSubAccountState } from "@/states/state-management"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { account, sub_account } from "@prisma/client"
 import { Loader2, Save } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { transactionSchemaCreateOrEdit } from "@/types/tablesSchemas"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -35,21 +33,31 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
-const CreateTransaction = ({
+const approvisionnement = z.object({
+  amount: z.number({ coerce: true }),
+  comments: z.string().optional(),
+  sub_account_id: z.string().uuid(),
+  user_id: z.string().uuid().optional(),
+})
+
+const CreateApprovisionnement = ({
   triggerElement,
-  accountList,
-  profileId,
   toast,
+  profileId,
+  accountList,
 }: {
-  setData: any
-  accountList: (account & { sub_accounts: sub_account[] })[]
-  profileId: string
-  toast: any
   triggerElement: any
+  toast: any
+  profileId: string
+  accountList: (account & { sub_accounts: sub_account[] })[]
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { setCurrentSubAccount } = useCurrentSubAccountState()
+
+  const form = useForm<z.infer<typeof approvisionnement>>({
+    resolver: zodResolver(approvisionnement),
+    defaultValues: {},
+  })
   const listOfSubAccounts: sub_account[] = []
 
   accountList
@@ -60,21 +68,11 @@ const CreateTransaction = ({
       })
     })
 
-  const form = useForm<z.infer<typeof transactionSchemaCreateOrEdit>>({
-    resolver: zodResolver(transactionSchemaCreateOrEdit),
-    defaultValues: {
-      numero_reference: "",
-      clientName: "",
-    },
-  })
-
-  async function onSubmit(
-    values: z.infer<typeof transactionSchemaCreateOrEdit>
-  ) {
+  async function onSubmit(values: z.infer<typeof approvisionnement>) {
     setIsLoading(true)
     // Write here logic to add a new transaction
     values.user_id = profileId
-    const response = await fetch("/api/transactions", {
+    const response = await fetch("/api/approvisionnement", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -82,10 +80,7 @@ const CreateTransaction = ({
       },
       body: JSON.stringify(values),
     })
-    // const currentSubAccount = listOfSubAccounts.filter(
-    //   (value) => value.id === values.sub_account_id
-    // )[0]
-    // setCurrentSubAccount(currentSubAccount)
+
     const finalResponse = await response.json()
     if (finalResponse.messageType === "success") {
       toast({
@@ -94,15 +89,9 @@ const CreateTransaction = ({
       })
 
       form.reset({
-        user_id: "",
-        clientName: "",
-        transaction_type: "Depot",
-        sub_account_id: "",
         amount: 0,
-        identityPiece: "",
-        phoneNumber: "",
-        numero_reference: "",
         comments: "",
+        sub_account_id: "",
       })
       setIsOpen(false)
       window.location.reload()
@@ -117,50 +106,21 @@ const CreateTransaction = ({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger asChild>{triggerElement}</DialogTrigger>
-      <DialogContent style={{ maxWidth: "60vw ", width: "50vw" }}>
+    <Dialog>
+      <DialogTrigger>{triggerElement}</DialogTrigger>
+      <DialogContent style={{ maxWidth: "40vw ", width: "40vw" }}>
         <DialogHeader>
-          <DialogTitle>New transaction</DialogTitle>
+          <DialogTitle>New provisioning</DialogTitle>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="grid grid-cols-2 gap-4"
+              className="mt-8 grid grid-cols-2 gap-4"
             >
-              <FormField
-                control={form.control}
-                name="transaction_type"
-                render={({ field }) => (
-                  <FormItem className={"mt-4"}>
-                    <FormLabel>Type Operation</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a type of operation" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={"Depot"} key={"Depot"}>
-                          Depot
-                        </SelectItem>
-                        <SelectItem value={"Retrait"} key={"Retrait"}>
-                          Retrait
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="sub_account_id"
                 render={({ field }) => (
-                  <FormItem className={"mt-4"}>
+                  <FormItem className={""}>
                     <FormLabel>Comptes</FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -184,48 +144,6 @@ const CreateTransaction = ({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="ex: +243970000000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="clientName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Client Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="ex: Guylain Kasongo" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="identityPiece"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{`Piece d'identite`}</FormLabel>
-                    <FormControl>
-                      <Input placeholder="ex: Guylain Kasongo" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="amount"
@@ -243,21 +161,6 @@ const CreateTransaction = ({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="numero_reference"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Numero de reference transaction</FormLabel>
-                    <FormControl>
-                      <Input placeholder="ex: 00000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="col-span-2">
                 <FormField
                   control={form.control}
@@ -298,4 +201,4 @@ const CreateTransaction = ({
   )
 }
 
-export default CreateTransaction
+export default CreateApprovisionnement
